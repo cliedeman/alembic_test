@@ -1,0 +1,17 @@
+web:
+  build: .
+  volumes:
+    - ./:/usr/app/
+  ports:
+    - "5000:5000"
+  links:
+    - db
+  command: >
+    bash -c "
+    sleep 30
+    && export PYTHONPATH="${PYTHONPATH}:."
+    && alembic revision --autogenerate -m "Test""
+db:
+  image: postgres:9.5.0
+  ports:
+   - "5432:5432"
