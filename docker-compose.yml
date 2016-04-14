@@ -10,7 +10,9 @@ web:
     bash -c "
     sleep 30
     && export PYTHONPATH="${PYTHONPATH}:."
-    && alembic revision --autogenerate -m "Test""
+    && alembic revision --autogenerate -m "Test1"
+    && alembic upgrade head
+    && alembic revision --autogenerate -m "Test2""
 db:
   image: postgres:9.5.0
   ports:

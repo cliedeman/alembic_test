@@ -55,6 +55,12 @@ class User(db.Model, AuditMixin):
     password = db.Column(db.String(200), nullable=False)
 
 
+class Person(db.Model, AuditMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    firstname = db.Column(db.String(50), nullable=False)
+    surname = db.Column(db.String(50), nullable=False)
+
+
 @app.route("/")
 def index():
     return "Hello"
