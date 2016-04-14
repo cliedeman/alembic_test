@@ -12,7 +12,9 @@ web:
     && export PYTHONPATH="${PYTHONPATH}:."
     && alembic revision --autogenerate -m "Test1"
     && alembic upgrade head
-    && alembic revision --autogenerate -m "Test2""
+    && alembic revision --autogenerate -m "Test2"
+    && alembic upgrade head
+    && alembic revision --autogenerate -m "Test3""
 db:
   image: postgres:9.5.0
   ports:
