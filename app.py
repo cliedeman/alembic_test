@@ -10,41 +10,33 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-db.Model.metadata = MetaData(naming_convention=dict(
+naming_convention = dict(
     ix='ix_%(column_0_label)s',
     uq="uq_%(table_name)s_%(column_0_name)s",
     ck="ck_%(table_name)s_%(constraint_name)s",
     fk="fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
     pk="pk_%(table_name)s"
-))
+)
+
+db.Model.metadata = MetaData(naming_convention=naming_convention)
 
 
 class AuditMixin:
     @declared_attr
     def created_by_id(cls):
+        if cls.metadata and cls.metadata.naming_convention is None:
+            name = 'fk_%s_created_by_id' % cls.__tablename__
+        else:
+            name = None
+
         return db.Column(db.Integer,
-                         db.ForeignKey('user.id', name='fk_%s_created_by_id' % cls.__tablename__,
-                                       use_alter=True))
+                         db.ForeignKey('user.id', name=name))
 
     @declared_attr
     def created_by(cls):
         return db.relationship(
             'User',
             primaryjoin='User.id == %s.created_by_id' % cls.__name__,
-            remote_side='User.id'
-        )
-
-    @declared_attr
-    def updated_by_id(cls):
-        return db.Column(db.Integer,
-                         db.ForeignKey('user.id', name='fk_%s_updated_by_id' % cls.__tablename__,
-                                       use_alter=True))
-
-    @declared_attr
-    def updated_by(cls):
-        return db.relationship(
-            'User',
-            primaryjoin='User.id == %s.updated_by_id' % cls.__name__,
             remote_side='User.id'
         )
 
